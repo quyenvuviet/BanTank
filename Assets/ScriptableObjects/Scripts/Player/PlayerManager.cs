@@ -55,13 +55,11 @@ public class PlayerManager : MonoBehaviour
         }
 
         PlayerManagerIsReady?.Invoke(MyPlayer);
-
     }
 
     public void AddPlayer(Player newPlayer)
     {
         Players.Add(newPlayer.ID, newPlayer);
-
     }
 
     public void RemovePlayer(byte id)

@@ -24,6 +24,7 @@ public class NetReady : NetMessage
     public override void Serialize(ref DataStreamWriter writer)
     {
         base.Serialize(ref writer);
+
         writer.WriteByte(Id);
     }
 
