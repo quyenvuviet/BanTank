@@ -7,7 +7,7 @@ using UnityEngine;
     Every client will have this
     
     Lớp này dùng để lưu trữ tất cả các bể chứa dữ liệu còn sống
-         Mọi khách hàng sẽ có cái này
+         Mọi khách hàng sẽ có cái này  hjjhn
 */
 public class TankManager : MonoBehaviour
 {
