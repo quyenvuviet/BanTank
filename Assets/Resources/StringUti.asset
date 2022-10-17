@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63519a46fec26f749965cfd95f42eab7, type: 3}
+  m_Name: StringUti
+  m_EditorClassIdentifier: 
+  YouAreDead: "B\u1EA1n \u0111\xE3 ch\u1EBFt \\n S\u1EBD \u0111\u01B0\u1EE3c h\u1ED3i
+    sinh trong{0}"
+  PingCounter: 'Ping: {0} ms'
+  FpsCounter: 'FPS: {0}'
+  BlueTeamKill: <b><color=#5CD0E5>{0}</color></b> Killed <b><color=#F86868>{1}</color></b>
+  BlueSameTeamKill: <b><color=#5CD0E5>{0}</color></b> Killed <b><color=#5CD0E5>{1}</color></b>
+  RedTeamKill: <b><color=#F86868>{0}</color></b> Killed <b><color=#5CD0E5>{1}</color></b>
+  RedSameTeamKill: <b><color=#F86868>{0}</color></b> Killed <b><color=#F86868>{1}</color></b>
+  YouWin: <b><color=#F44336>You Win</color>
+  YouLose: <b><color=#7f6000>You Lose</color>
