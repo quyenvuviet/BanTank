@@ -10,7 +10,6 @@ using UnityEngine;
 */
 public class TankServerManager : MonoBehaviour
 {
-    private readonly int maxLives = 3;
 
     #region UnityFunctions
     public static TankServerManager Singleton { get; private set; }
@@ -35,7 +34,7 @@ public class TankServerManager : MonoBehaviour
     public Dictionary<byte, Quaternion> PreRbRotation;
     public Dictionary<byte, float> NextSendTFireTime;
 
-    public Dictionary<byte, int> CountDiePlayer;
+   
     public int count = 0;
 
 
@@ -48,7 +47,6 @@ public class TankServerManager : MonoBehaviour
         PreRbPosition = new Dictionary<byte, Vector3>();
         PreRbRotation = new Dictionary<byte, Quaternion>();
         NextSendTFireTime = new Dictionary<byte, float>();
-        CountDiePlayer = new Dictionary<byte, int>();
         DontDestroyOnLoad(gameObject);
     }
 
@@ -155,10 +153,6 @@ public class TankServerManager : MonoBehaviour
         PreRbRotation.Add(tankInformation.Player.ID, addedTank.transform.rotation);
         NextSendTFireTime.Add(tankInformation.Player.ID, 0);
 
-        if (!CountDiePlayer.ContainsKey(tankInformation.Player.ID))
-        {
-            CountDiePlayer.Add(tankInformation.Player.ID, maxLives);
-        }
     }
     /// <summary>
     /// Nhận gói tin và sử lý viện đạn của xe tăng
@@ -256,21 +250,8 @@ public class TankServerManager : MonoBehaviour
     }
     #endregion
     #region Gameover
-    /// <summary>
-    /// ckeck xem map của id còn mạng không 
-    /// </summary>
-    /// <returns></returns>
-    public bool CkeckSpawnablePlayer(byte id)
-    {
-        foreach (KeyValuePair<byte, int> a in CountDiePlayer)
-        {
-            if (a.Key == id&& a.Value>=0)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+   
+
     private void OnServerReceviedGameOverMessage(NetMessage message, NetworkConnection sender)
     {
         NETTGameOver tankDieMessage = message as NETTGameOver;
@@ -278,16 +259,6 @@ public class TankServerManager : MonoBehaviour
         //Server.Singleton.BroadCast(new NETTGameOver(tankDieMessage.Team));
     }
 
-    private int countDiePlayer(NETTGameOver tankDieMessage)
-    {
-        foreach (KeyValuePair<byte, int> a in CountDiePlayer)
-        {
-            if (a.Key == PlayerManager.Singleton.GetIDToTeam(tankDieMessage.Team))
-            {
-                return a.Value;
-            }
-        }
-        return 0;
-    }
+    
     #endregion
 }
