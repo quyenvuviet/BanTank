@@ -65,7 +65,8 @@ public class TankServerSpawner : MonoBehaviour
 
         Player sendPlayerInfo = PlayerManager.Singleton.GetPlayer(tSpawnReqMessage.ID);
         Vector3 newSpawnPosition = Vector3.zero;
-        if(Spawnable){
+        if(TankServerManager.Singleton.CkeckSpawnablePlayer(tSpawnReqMessage.ID))
+        {
             newSpawnPosition = spawnPosition.GetPosition(sendPlayerInfo.Role).position;
             TankServerManager.Singleton.CountDiePlayer[tSpawnReqMessage.ID] --;
         }
@@ -79,8 +80,10 @@ public class TankServerSpawner : MonoBehaviour
         float countDuration = tankSpawnerData.GetRespawnTime(player.Role);
         tankDieMessage.NextSpawnDuration = countDuration;
 
-        if(AllTeamDie){
-            Server.Singleton.BroadCast(new Netgameove9(teamm))
+        if(TankServerManager.Singleton.CkeckSpawnablePlayer(tankDieMessage.ID)){
+
+            NETTGameOver tankTeamMessage = message as NETTGameOver;
+            Server.Singleton.BroadCast(new NETTGameOver(tankTeamMessage.Team));
         }
 
         // At this point a tank just die so send the dead message to all player
@@ -115,7 +118,7 @@ public class TankServerSpawner : MonoBehaviour
 
         isInCountDown.Remove(id);
 
-        Server.Singleton.SendToClient(sender, new NetTSpawnREady(id));
+        Server.Singleton.SendToClient(sender, new NetTSpawnReady(id));
 
         //new message
     }

@@ -16,7 +16,7 @@ public class NetworkUIManager : MonoBehaviour
 
     public Action<byte, float> OnLocalPlayerDeadUI;
     public Action<Player, Player> OnPlayerKilledPlayer;
-    public Action<Team, int> OnPlayerGameover;
+   
 
     private void Awake()
     {
@@ -39,13 +39,11 @@ public class NetworkUIManager : MonoBehaviour
         {
             NetUtility.C_T_DIE += OnClientReceivedTDieMessage;
             NetUtility.C_T_KILL += OnClientReceivedTKillMessage;
-            NetUtility.C_GAMEOVER += OnClientReceivedGameOverMessage;
         }
         else
         {
             NetUtility.C_T_DIE -= OnClientReceivedTDieMessage;
             NetUtility.C_T_KILL -= OnClientReceivedTKillMessage;
-            NetUtility.C_GAMEOVER -= OnClientReceivedGameOverMessage;
         }
     }
 
@@ -64,17 +62,12 @@ public class NetworkUIManager : MonoBehaviour
         NetTDie tankDieMessage = message as NetTDie;
         OnLocalPlayerDeadUI?.Invoke(tankDieMessage.ID, tankDieMessage.NextSpawnDuration);
 
-        NETTGameOver tankGameoverMessage = message as NETTGameOver;
+        //NETTGameOver tankGameoverMessage = message as NETTGameOver;
         //  UIOverGame.Singleton.GameOver?.Invoke(killed, tankGameoverMessage.Count);
-        OnPlayerGameover?.Invoke(tankGameoverMessage.Team, tankGameoverMessage.Count);
+       
         // OnLocalPlayerGameover?.Invoke(tankDieMessage.ID, tankDieMessage.Count);
 
     }
-    private void OnClientReceivedGameOverMessage(NetMessage message)
-    {
-        NETTGameOver tankGameoverMessage = message as NETTGameOver;
-      //  UIOverGame.Singleton.GameOver?.Invoke(killed, tankGameoverMessage.Count);
-        OnPlayerGameover?.Invoke(tankGameoverMessage.Team, tankGameoverMessage.Count);
-    }
+
 
 }

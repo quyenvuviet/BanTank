@@ -50,14 +50,16 @@ public class TankManager : MonoBehaviour
             NetUtility.C_T_SPAWN_REQ -= OnClientReceivedTSpawnRequestMessage;
             NetUtility.C_T_SPAWN -= OnClientReceivedTSpawnMessage;
             NetUtility.C_T_DIE -= OnClientReceivedTDieMessage;
+            NetUtility.C_T_SPAWN_READY -= OnClientReceivedTSpawnREADYMessage;
 
         }
     }
 
-    private void OnClientReceivedTSpawnREADYMessage(NetMessage obj)
+    private void OnClientReceivedTSpawnREADYMessage(NetMessage omessage)
     {
-        NetTSpawnReady messag = (NetTSpawnReady)obj;
-        Client.Singleton.SendToServer(new NetTSpawnReq(messag.ID));
+        NetTSpawnReady messag = omessage as NetTSpawnReady;
+
+        Client.Singleton.SendToServer(new NetTSpawnReady(messag.ID));
     }
 
     private void PlayerManagerIsReady(Player player)
@@ -76,13 +78,16 @@ public class TankManager : MonoBehaviour
 
         if (tSpawnReqMessage.Position != Vector3.zero)
         {
-
-
             OnTankSpawn?.Invoke(tSpawnReqMessage.ID, tSpawnReqMessage.Position);
             Client.Singleton.SendToServer(new NetTSpawn(tSpawnReqMessage.ID, tSpawnReqMessage.Position));
         }
         else
         {
+            Debug.Log("nhay vao day là gameover");
+            NETTGameOver TeamGameOverMessage = message as NETTGameOver;
+            // nếu là không hiện UI Game over
+           // UIOverGame.Singleton.GameOvers(TeamGameOverMessage.Team);
+           
         }
     }
 

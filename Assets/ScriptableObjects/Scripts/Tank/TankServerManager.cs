@@ -256,12 +256,26 @@ public class TankServerManager : MonoBehaviour
     }
     #endregion
     #region Gameover
-
+    /// <summary>
+    /// ckeck xem map của id còn mạng không 
+    /// </summary>
+    /// <returns></returns>
+    public bool CkeckSpawnablePlayer(byte id)
+    {
+        foreach (KeyValuePair<byte, int> a in CountDiePlayer)
+        {
+            if (a.Key == id&& a.Value>=0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     private void OnServerReceviedGameOverMessage(NetMessage message, NetworkConnection sender)
     {
         NETTGameOver tankDieMessage = message as NETTGameOver;
         Debug.Log("so lan chet" + countDiePlayer(tankDieMessage));
-        Server.Singleton.BroadCast(new NETTGameOver(tankDieMessage.Team, countDiePlayer(tankDieMessage)));
+        //Server.Singleton.BroadCast(new NETTGameOver(tankDieMessage.Team));
     }
 
     private int countDiePlayer(NETTGameOver tankDieMessage)
