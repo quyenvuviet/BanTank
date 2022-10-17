@@ -48,6 +48,8 @@ public enum OpCode
     /// Xe Tăng chết
     /// </summary>
     T_DIE,
+
+    T_SPAWN_READY,
     /// <summary>
     /// Kill
     /// </summary>
@@ -88,6 +90,7 @@ public static class NetUtility
     /// Gói tin xóa người chơi ra khỏi phòng
     /// </summary>
     public static Action<NetMessage> C_DISCONNECT;
+
     public static Action<NetMessage> C_GAMEOVER;
 
     public static Action<NetMessage> C_READY;
@@ -145,6 +148,7 @@ public static class NetUtility
     public static Action<NetMessage, NetworkConnection> S_T_SPAWN_REQ;
     public static Action<NetMessage, NetworkConnection> S_T_SPAWN;
     public static Action<NetMessage, NetworkConnection> S_T_KILL;
+    public static Action<NetMessage, NetworkConnection> S_T_SPAWN_READY;
 
     // UI 
     public static Action<NetMessage> C_UI_SPAWN_COUNTDOWN;
