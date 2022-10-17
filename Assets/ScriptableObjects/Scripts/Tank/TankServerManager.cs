@@ -10,6 +10,8 @@ using UnityEngine;
 */
 public class TankServerManager : MonoBehaviour
 {
+    private readonly int maxLives = 3;
+
     #region UnityFunctions
     public static TankServerManager Singleton { get; private set; }
 
@@ -26,7 +28,7 @@ public class TankServerManager : MonoBehaviour
 
     private float timeBetweenEachSend = 0.05f;
     private float nextSendTime;
-   
+
 
     public Dictionary<byte, Rigidbody> TankRigidbodies;
     public Dictionary<byte, Vector3> PreRbPosition;
@@ -109,7 +111,7 @@ public class TankServerManager : MonoBehaviour
             TankSpawner.Singleton.OnTankRemoved += OnTankRemoved;
 
             NetUtility.S_GAMEOVER += OnServerReceviedGameOverMessage;
-          
+
         }
         else
         {
@@ -133,12 +135,11 @@ public class TankServerManager : MonoBehaviour
         PreRbPosition.Remove(removedTankID);
         PreRbRotation.Remove(removedTankID);
         NextSendTFireTime.Remove(removedTankID);
-        /// moi lan chet se + len 1
-       
-         CountDiePlayer[removedTankID]++;
-       
-
-
+        /// moi lan chet se  - 1
+        if (CountDiePlayer.ContainsKey(removedTankID))
+        {
+            CountDiePlayer[removedTankID]--;
+        }
     }
 
     /// <summary>
@@ -153,7 +154,11 @@ public class TankServerManager : MonoBehaviour
         PreRbPosition.Add(tankInformation.Player.ID, addedTank.transform.position);
         PreRbRotation.Add(tankInformation.Player.ID, addedTank.transform.rotation);
         NextSendTFireTime.Add(tankInformation.Player.ID, 0);
-       
+
+        if (!CountDiePlayer.ContainsKey(tankInformation.Player.ID))
+        {
+            CountDiePlayer.Add(tankInformation.Player.ID, maxLives);
+        }
     }
     /// <summary>
     /// Nhận gói tin và sử lý viện đạn của xe tăng
@@ -182,7 +187,7 @@ public class TankServerManager : MonoBehaviour
             Server.Singleton.BroadCast(tFireInputMessage);
         }
     }
-    
+
     private void OnServerReceivedTTowerInputMessage(NetMessage message, NetworkConnection sentPlayer)
     {
         NetTTowerInput tankTowerInputMessage = message as NetTTowerInput;
@@ -233,7 +238,7 @@ public class TankServerManager : MonoBehaviour
         Server.Singleton.BroadCast(new NetTRotation(tankInputMessage.ID, sentPlayerRigidbody.transform.forward));
         Server.Singleton.BroadCast(new NetTVelocity(tankInputMessage.ID, sentPlayerRigidbody.velocity));
     }
-    
+
 
     #endregion
     /// <summary>
@@ -255,15 +260,15 @@ public class TankServerManager : MonoBehaviour
     private void OnServerReceviedGameOverMessage(NetMessage message, NetworkConnection sender)
     {
         NETTGameOver tankDieMessage = message as NETTGameOver;
-        Debug.Log("so lan chet"+countDiePlayer(tankDieMessage));
-        Server.Singleton.BroadCast(new NETTGameOver( tankDieMessage.Team, countDiePlayer(tankDieMessage)));
+        Debug.Log("so lan chet" + countDiePlayer(tankDieMessage));
+        Server.Singleton.BroadCast(new NETTGameOver(tankDieMessage.Team, countDiePlayer(tankDieMessage)));
     }
 
     private int countDiePlayer(NETTGameOver tankDieMessage)
     {
-        foreach(KeyValuePair<byte,int> a in CountDiePlayer)
+        foreach (KeyValuePair<byte, int> a in CountDiePlayer)
         {
-            if(a.Key== PlayerManager.Singleton.GetIDToTeam(tankDieMessage.Team))
+            if (a.Key == PlayerManager.Singleton.GetIDToTeam(tankDieMessage.Team))
             {
                 return a.Value;
             }

@@ -10,6 +10,8 @@ using UnityEngine;
 public class TankServerSpawner : MonoBehaviour
 {
     public static TankServerSpawner Singleton { get; private set; }
+    public bool Spawnable { get; private set; }
+
     public SpawnPosition spawnPosition;
     public TankSpawnerData tankSpawnerData;
     private List<byte> isInCountDown;
@@ -62,9 +64,11 @@ public class TankServerSpawner : MonoBehaviour
         NetTSpawnReq tSpawnReqMessage = message as NetTSpawnReq;
 
         Player sendPlayerInfo = PlayerManager.Singleton.GetPlayer(tSpawnReqMessage.ID);
-
-        Vector3 newSpawnPosition = spawnPosition.GetPosition(sendPlayerInfo.Role).position;
-
+        Vector3 newSpawnPosition = Vector3.zero;
+        if(Spawnable){
+            newSpawnPosition = spawnPosition.GetPosition(sendPlayerInfo.Role).position;
+            TankServerManager.Singleton.CountDiePlayer[tSpawnReqMessage.ID] --;
+        }
         Server.Singleton.SendToClient(sender, new NetTSpawnReq(tSpawnReqMessage.ID, newSpawnPosition));
     }
 
@@ -74,6 +78,10 @@ public class TankServerSpawner : MonoBehaviour
         Player player = PlayerManager.Singleton.GetPlayer(tankDieMessage.ID);
         float countDuration = tankSpawnerData.GetRespawnTime(player.Role);
         tankDieMessage.NextSpawnDuration = countDuration;
+
+        if(AllTeamDie){
+            Server.Singleton.BroadCast(new Netgameove9(teamm))
+        }
 
         // At this point a tank just die so send the dead message to all player
         // Which contains the death time, use this to show UI
@@ -107,8 +115,8 @@ public class TankServerSpawner : MonoBehaviour
 
         isInCountDown.Remove(id);
 
-        Vector3 newSpawnPosition = spawnPosition.GetPosition (player.Role).position;
+        Server.Singleton.SendToClient(sender, new NetTSpawnREady(id));
 
-        Server.Singleton.SendToClient(sender, new NetTSpawnReq(id, newSpawnPosition));
+        //new message
     }
 }

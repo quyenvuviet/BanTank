@@ -139,6 +139,7 @@ public static class NetUtility
     public static Action<NetMessage> C_T_DIE;
     public static Action<NetMessage> C_T_SPAWN_REQ;
     public static Action<NetMessage> C_T_SPAWN;
+    public static Action<NetMessage> C_T_SPAWN_READY;
     public static Action<NetMessage> C_T_KILL { get; set; }
     public static Action<NetMessage, NetworkConnection> S_T_DIE;
     public static Action<NetMessage, NetworkConnection> S_T_SPAWN_REQ;
@@ -266,4 +267,3 @@ public static class NetUtility
             msg.ReceivedOnClient();
     }
 }
- 

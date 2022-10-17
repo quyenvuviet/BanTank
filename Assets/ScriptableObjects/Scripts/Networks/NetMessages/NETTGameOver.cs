@@ -5,7 +5,7 @@ using UnityEngine;
 
 
 public class NETTGameOver : NetMessage
-    {
+{
     public Team Team { set; get; }
     public int Count { set; get; }
 
@@ -28,12 +28,12 @@ public class NETTGameOver : NetMessage
 
         writer.WriteInt((int)Team);
         writer.WriteInt(Count);
-       
+
     }
 
     public override void Deserialize(ref DataStreamReader reader)
     {
-        Team =(Team)reader.ReadInt();
+        Team = (Team)reader.ReadInt();
         Count = reader.ReadInt();
     }
 
@@ -51,5 +51,5 @@ public class NETTGameOver : NetMessage
         NetUtility.S_GAMEOVER?.Invoke(this, cnn);
     }
 }
-    
+
 

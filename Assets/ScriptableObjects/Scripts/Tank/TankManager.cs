@@ -12,12 +12,11 @@ using UnityEngine;
 public class TankManager : MonoBehaviour
 {
     public static TankManager Singleton { get; private set; }
-
     // Tanks data
     [HideInInspector] public TankInformation LocalTankInformation;
     public Action<byte, Vector3> OnTankSpawn;
     public Action<byte> OnTankDie;
-   // public Action<byte, int> CountTankDie;
+    // public Action<byte, int> CountTankDie;
 
     private void Awake()
     {
@@ -38,10 +37,11 @@ public class TankManager : MonoBehaviour
         {
             PlayerManager.Singleton.PlayerManagerIsReady += PlayerManagerIsReady;
 
+            NetUtility.C_T_SPAWN_READY += OnClientReceivedTSpawnREADYMessage;
             NetUtility.C_T_SPAWN_REQ += OnClientReceivedTSpawnRequestMessage;
             NetUtility.C_T_SPAWN += OnClientReceivedTSpawnMessage;
             NetUtility.C_T_DIE += OnClientReceivedTDieMessage;
-          
+
         }
         else
         {
@@ -50,8 +50,14 @@ public class TankManager : MonoBehaviour
             NetUtility.C_T_SPAWN_REQ -= OnClientReceivedTSpawnRequestMessage;
             NetUtility.C_T_SPAWN -= OnClientReceivedTSpawnMessage;
             NetUtility.C_T_DIE -= OnClientReceivedTDieMessage;
-            
+
         }
+    }
+
+    private void OnClientReceivedTSpawnREADYMessage(NetMessage obj)
+    {
+        NetTSpawnReady messag = (NetTSpawnReady)obj;
+        Client.Singleton.SendToServer(new NetTSpawnReq(messag.ID));
     }
 
     private void PlayerManagerIsReady(Player player)
@@ -68,8 +74,16 @@ public class TankManager : MonoBehaviour
     {
         NetTSpawnReq tSpawnReqMessage = message as NetTSpawnReq;
 
-        OnTankSpawn?.Invoke(tSpawnReqMessage.ID, tSpawnReqMessage.Position);
-        Client.Singleton.SendToServer(new NetTSpawn(tSpawnReqMessage.ID, tSpawnReqMessage.Position));
+        if (tSpawnReqMessage.Position != Vector3.zero)
+        {
+
+
+            OnTankSpawn?.Invoke(tSpawnReqMessage.ID, tSpawnReqMessage.Position);
+            Client.Singleton.SendToServer(new NetTSpawn(tSpawnReqMessage.ID, tSpawnReqMessage.Position));
+        }
+        else
+        {
+        }
     }
 
     // This is for all player
@@ -78,18 +92,18 @@ public class TankManager : MonoBehaviour
         NetTSpawn tSpawnMessage = message as NetTSpawn;
 
         OnTankSpawn?.Invoke(tSpawnMessage.ID, tSpawnMessage.Position);
-       
+
     }
 
     private void OnClientReceivedTDieMessage(NetMessage message)
     {
         OnTankDie?.Invoke((message as NetTDie).ID);
         // Debug.Log("xe tang chet " + (message as NETTGameOver).Id + " so lan chet" + (message as NETTGameOver).Count);
-        
+
     }
-   
-    
-   
+
+
+
 
 
     #endregion
