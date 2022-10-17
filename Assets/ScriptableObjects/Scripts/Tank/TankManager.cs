@@ -60,6 +60,7 @@ public class TankManager : MonoBehaviour
         NetTSpawnReady messag = omessage as NetTSpawnReady;
 
         Client.Singleton.SendToServer(new NetTSpawnReady(messag.ID));
+
     }
 
     private void PlayerManagerIsReady(Player player)

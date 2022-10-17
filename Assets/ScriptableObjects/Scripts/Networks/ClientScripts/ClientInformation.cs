@@ -167,6 +167,7 @@ public class ClientInformation : MonoBehaviour
         Debug.Log($"{joinMessage.JoinedPlayer.Name} just joined");
 
         IdList.Add(joinMessage.JoinedPlayer.Id);
+
         NameList.Add(joinMessage.JoinedPlayer.Name);
 
         OnNewJoinedPlayer?.Invoke(joinMessage.JoinedPlayer);
